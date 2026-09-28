@@ -552,7 +552,7 @@ class OperationManager:
         )
 
     @staticmethod
-    def hasSavedDietRecord(selected_date: date | datetime):
+    def hasSavedRecord(selected_date: date | datetime):
         selected_date = OperationManager._normalizeDate(selected_date)
         records = Data.getRecordsSnapshot()
         record = (
@@ -560,7 +560,7 @@ class OperationManager:
             if isinstance(records, dict)
             else None
         )
-        return OperationManager._recordHasFood(record)
+        return OperationManager._recordHasData(record)
 
     @staticmethod
     def _confirmationKey(kind: str, value):
@@ -609,7 +609,7 @@ class OperationManager:
 
     @staticmethod
     def beginRecordDeleteConfirmation(selected_date: date | datetime):
-        if not OperationManager.hasSavedDietRecord(selected_date):
+        if not OperationManager.hasSavedRecord(selected_date):
             return {"active": False, "token": None, "remaining": 0, "text": "삭제"}
         return OperationManager._beginDeleteConfirmation(
             "record", selected_date, "삭제"
@@ -633,10 +633,7 @@ class OperationManager:
             if not isinstance(Data.data, dict):
                 return False
             record = Data.data.get(record_key)
-            meals = record.get("시간대", {}) if isinstance(record, dict) else {}
-            if not isinstance(meals, dict) or not any(
-                isinstance(items, (list, tuple)) and items for items in meals.values()
-            ):
+            if not OperationManager._recordHasData(record):
                 return False
             Data.data.pop(record_key)
             Data.saveRecords()

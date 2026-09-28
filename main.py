@@ -182,9 +182,10 @@
 #    - "조회" Button: event=open_write_calendar. 현재 체중 입력을 초안에 반영한 뒤
 #      calendarWritePage를 연다.
 
-#    - "삭제" Button: sync_record_delete_button이 저장된 식단 기록 유무와 확인 상태를 표시한다.
+#    - "삭제" Button: sync_record_delete_button이 해당 날짜에 저장된 체중 또는 음식 기록
+#      유무와 확인 상태를 표시한다.
 #      event=click_record_delete는 첫 클릭 뒤 5초 카운트다운을 시작하고, 제한 시간 내
-#      재클릭 시 저장된 식단 기록을 삭제한 뒤 defaultPage로 이동한다.
+#      재클릭 시 해당 날짜의 기록 전체를 삭제한 뒤 defaultPage로 이동한다.
 
 
 # 2) "시간대 식단" Frame에는 2x2 아침·점심·저녁·야식 카드가 있다.

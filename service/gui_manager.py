@@ -1751,7 +1751,7 @@ class GUI:
             }
 
         def sync_record_delete_button(widget):
-            has_record = op.hasSavedDietRecord(managed_date["value"])
+            has_record = op.hasSavedRecord(managed_date["value"])
             state = op.getRecordDeleteConfirmation(managed_date["value"])
             apply_record_delete_style(widget, state["text"], enabled=has_record)
 
@@ -1769,7 +1769,7 @@ class GUI:
 
         def click_record_delete(widget):
             selected_date = managed_date["value"]
-            if not op.hasSavedDietRecord(selected_date):
+            if not op.hasSavedRecord(selected_date):
                 return
             state = op.getRecordDeleteConfirmation(selected_date)
             if state["active"]:
@@ -1777,7 +1777,7 @@ class GUI:
                     deleted = op.confirmDeleteRecord(selected_date, state["token"])
                 except (OSError, ValueError, TypeError) as error:
                     messagebox.showerror(
-                        "식단 삭제", f"식단을 삭제하지 못했습니다.\n{error}"
+                        "기록 삭제", f"기록을 삭제하지 못했습니다.\n{error}"
                     )
                     return
                 if deleted:
