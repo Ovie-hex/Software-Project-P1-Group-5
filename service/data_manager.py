@@ -265,8 +265,51 @@ class DataManager:
                     save(backup_path, DataManager.sortFoods(DataManager.foods))
                 DataManager._setHidden(backup_path)
 
+            DataManager._pruneBackups()
             print(f"{now:%H:%M:%S} 백업 완료")
             return time_directory
+
+    @staticmethod
+    def _pruneBackups(maximum_backups=12):
+        if not DataManager._backup_directory.is_dir():
+            return
+
+        backups = []
+        records_filename = DataManager.source["records"].name
+        foods_filename = DataManager.source["foods"].name
+        for date_directory in DataManager._backup_directory.iterdir():
+            if not date_directory.is_dir():
+                continue
+            for time_directory in date_directory.iterdir():
+                if time_directory.is_dir():
+                    backups.append(
+                        (
+                            date_directory.name,
+                            time_directory.name,
+                            date_directory,
+                            time_directory,
+                            (time_directory / records_filename).is_file()
+                            and (time_directory / foods_filename).is_file(),
+                        )
+                    )
+
+        backups.sort(key=lambda backup: (backup[0], backup[1]), reverse=True)
+        completed_backups = [backup for backup in backups if backup[4]]
+        retained_backups = {
+            backup[3] for backup in completed_backups[:maximum_backups]
+        }
+        for _, _, date_directory, time_directory, _ in backups:
+            if time_directory in retained_backups:
+                continue
+            for backup_file in time_directory.iterdir():
+                if backup_file.is_file() and backup_file.suffix.lower() == ".json":
+                    backup_file.unlink()
+            shutil.rmtree(time_directory)
+
+            if date_directory.exists() and not any(
+                child.is_dir() for child in date_directory.iterdir()
+            ):
+                shutil.rmtree(date_directory)
 
     @staticmethod
     def getRecordsSnapshot():

@@ -26,6 +26,8 @@
 
 # - loadData()가 시작한 백업 스케줄러는 5분마다 records.json과 foods.json을 복사한다.
 #   백업은 data/backup/YYYY-MM-DD/HH-MM-SS 아래에 두며 Windows 숨김 속성을 적용한다.
+#   새 백업을 완료한 뒤 가장 최신 12개만 남기고 오래된 JSON 파일과 시간 폴더를 정리한다.
+#   날짜 폴더에 시간 폴더가 하나도 남지 않으면 날짜 폴더도 제거한다.
 
 # - 백업이 성공하면 현재 시각과 "백업 완료"를 출력한다.
 # - saveRecords(), saveFoods(), saveTargetCalories()가 파일 저장을 맡는다.
